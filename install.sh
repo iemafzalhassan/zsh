@@ -17,7 +17,7 @@ LOG_PREFIX="[zsh-dotfiles]"
 : "${REPO_URL:=https://github.com/iemafzalhassan/zsh.git}"
 : "${TARGET_DIR:=$HOME/Developer/Projects/zsh}"
 : "${CHANGE_SHELL:=true}"
-: "${INSTALL_ATUIN:=true}"
+: "${INSTALL_ATUIN:=false}"
 : "${INSTALL_STARSHIP:=true}"
 : "${INSTALL_TPM:=true}"
 : "${PROMPT_FOR_GIT_IDENTITY:=true}"
@@ -241,20 +241,40 @@ fix_linux_alt_names() {
 # =========================================================
 # Symlink dotfiles into $HOME
 # =========================================================
+# IMPORTANT: file naming is NOT uniform in this repo. Some modules are
+# dotfiles (`.zshrc`, `.zshenv`) but most aren't (`aliases.zsh`,
+# `bindings.zsh`, etc.). Use explicit `src|dst` pairs — do not template
+# with a `.$f` prefix or everything except zshrc/zshenv silently breaks.
 link_dotfiles() {
   log "linking dotfiles into $HOME..."
 
-  # zsh modules — symlinked as ~/.zshrc, ~/.aliases.zsh, etc.
-  local zsh_files=(zshrc zshenv aliases.zsh bindings.zsh fzf.zsh plugins.zsh prompt.zsh)
-  for f in "${zsh_files[@]}"; do
-    symlink "$DOTFILES_DIR/.$f" "$HOME/.$f"
-  done
-
-  # starship config
-  mkdir -p "$XDG_CONFIG_HOME"
   [[ -z "${XDG_CONFIG_HOME:-}" ]] && XDG_CONFIG_HOME="$HOME/.config"
   export XDG_CONFIG_HOME
   mkdir -p "$XDG_CONFIG_HOME"
+
+  # zsh modules — explicit src|dst pairs.
+  local zsh_links=(
+    "$DOTFILES_DIR/.zshrc|$HOME/.zshrc"
+    "$DOTFILES_DIR/.zshenv|$HOME/.zshenv"
+    "$DOTFILES_DIR/aliases.zsh|$HOME/.aliases.zsh"
+    "$DOTFILES_DIR/bindings.zsh|$HOME/.bindings.zsh"
+    "$DOTFILES_DIR/fzf.zsh|$HOME/.fzf.zsh"
+    "$DOTFILES_DIR/plugins.zsh|$HOME/.plugins.zsh"
+    "$DOTFILES_DIR/prompt.zsh|$HOME/.prompt.zsh"
+  )
+  local pair src dst
+  for pair in "${zsh_links[@]}"; do
+    src="${pair%%|*}"
+    dst="${pair##*|}"
+    [[ -f "$src" ]] && symlink "$src" "$dst"
+  done
+
+  # zsh.conf marker (optional — referenced by debug code)
+  if [[ -f "$DOTFILES_DIR/zsh.conf" ]]; then
+    symlink "$DOTFILES_DIR/zsh.conf" "$HOME/.zsh.conf"
+  fi
+
+  # starship config
   symlink "$DOTFILES_DIR/starship.toml" "$XDG_CONFIG_HOME/starship.toml"
 
   # gitconfig
@@ -267,11 +287,26 @@ link_dotfiles() {
     symlink "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
   fi
 
-  # nvim
+  # nvim — the entire .config/nvim dir becomes ~/.config/nvim
   if [[ -d "$DOTFILES_DIR/nvim/.config/nvim" ]]; then
     symlink "$DOTFILES_DIR/nvim/.config/nvim" "$XDG_CONFIG_HOME/nvim"
-    log "linked nvim config -> $XDG_CONFIG_HOME/nvim"
   fi
+}
+
+# vi/vim/v -> nvim shims in ~/.local/bin. Aliases in aliases.zsh cover
+# interactive shells; these shims cover `git commit`, `crontab -e`, and
+# any script that exec()s `vi` directly without sourcing our aliases.
+link_vim_shims() {
+  local nvim_path
+  nvim_path="$(command -v nvim || true)"
+  [[ -z "$nvim_path" ]] && { warn "nvim not found — skipping vi/vim shims"; return 0; }
+  mkdir -p "$HOME/.local/bin"
+  for name in vi vim v; do
+    if [[ ! -e "$HOME/.local/bin/$name" ]]; then
+      ln -s "$nvim_path" "$HOME/.local/bin/$name"
+      log "shim: $HOME/.local/bin/$name -> $nvim_path"
+    fi
+  done
 }
 
 # =========================================================
@@ -360,6 +395,7 @@ main() {
   make_state_dirs
   install_tpm
   link_dotfiles
+  link_vim_shims
   configure_git_identity
   change_shell
 
@@ -370,7 +406,6 @@ main() {
   log "  - open tmux and press Prefix + I to install tmux plugins"
   log "  - open nvim once (Lazy.nvim will auto-install plugins on first launch)"
   log "  - starship: should work immediately"
-  log "  - atuin: run 'atuin register' then 'atuin login' if you want sync"
   echo
   log "any issues? read README.md or open an issue on $REPO_URL"
 }

@@ -49,8 +49,10 @@ alias zl='zi'             # interactive picker
 # =========================================================
 # Editor
 # =========================================================
-# Pure emacs in the shell, vim only inside vim. These aliases exist so
-# any tool that calls `vi`/`vim` (git commit, crontab, scripts) gets nvim.
+# Pure emacs in the shell, vim only inside vim. The shell aliases below
+# are for interactive sessions; install.sh also drops ~/.local/bin/vi
+# and ~/.local/bin/vim -> nvim shims so non-interactive callers
+# (git commit, crontab -e, scripts) get nvim too.
 if command -v nvim >/dev/null 2>&1; then
   alias vim='nvim'
   alias vi='nvim'

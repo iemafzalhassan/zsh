@@ -31,7 +31,3 @@ export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 # ---------- PATH ----------
 # Personal scripts and shims (used by install.sh to drop bat->batcat symlinks, etc.)
 export PATH="$HOME/.local/bin:$PATH"
-
-# ---------- Atuin (history search) ----------
-# Lazy-init in .zshrc; this just points Atuin at the right config dir.
-export ATUIN_CONFIG_DIR="$XDG_CONFIG_HOME/atuin"

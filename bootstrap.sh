@@ -17,7 +17,8 @@
 
 set -euo pipefail
 
-: "${REPO_URL:=https://github.com/YOUR_GITHUB_USERNAME/zsh.git}"
+: "${REPO_URL:=https://github.com/iemafzalhassan/zsh.git}"
+: "${REPO_RAW_URL:=https://raw.githubusercontent.com/iemafzalhassan/zsh/main}"
 : "${TARGET_DIR:=$HOME/Developer/Projects/zsh}"
 : "${BRANCH:=main}"
 

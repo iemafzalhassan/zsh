@@ -47,6 +47,15 @@ sed -n "1,${HEAD}p" "$ORIG" > "$TMPDOT/_sourced.sh"
 source "$TMPDOT/_sourced.sh"
 make_state_dirs
 link_dotfiles
+# link_vim_shims needs a real nvim; symlink a fake one into PATH so the
+# shim-creation logic runs in the sandbox.
+mkdir -p "$TMPDOT/fakebin"
+cat > "$TMPDOT/fakebin/nvim" <<'NVIM_EOF'
+#!/usr/bin/env bash
+exit 0
+NVIM_EOF
+chmod +x "$TMPDOT/fakebin/nvim"
+PATH="$TMPDOT/fakebin:$PATH" link_vim_shims
 WRAP_EOF
 chmod +x "$WRAP"
 bash "$WRAP"
@@ -65,6 +74,15 @@ for f in .zshrc .zshenv .aliases.zsh .bindings.zsh .fzf.zsh .plugins.zsh .prompt
 done
 [[ -L "$FAKE_HOME/.config/starship.toml" ]] && { echo "  [OK]  .config/starship.toml"; ok=$((ok+1)); } || { echo "  [BAD] .config/starship.toml"; bad=$((bad+1)); }
 [[ -L "$FAKE_HOME/.config/nvim" ]] && { echo "  [OK]  .config/nvim"; ok=$((ok+1)); } || { echo "  [BAD] .config/nvim"; bad=$((bad+1)); }
+for s in vi vim v; do
+  if [[ -L "$FAKE_HOME/.local/bin/$s" ]] && [[ -e "$FAKE_HOME/.local/bin/$s" ]]; then
+    echo "  [OK]  .local/bin/$s -> $(readlink "$FAKE_HOME/.local/bin/$s")"
+    ok=$((ok+1))
+  else
+    echo "  [BAD] .local/bin/$s"
+    bad=$((bad+1))
+  fi
+done
 echo "==== SYMLINK SUMMARY: $ok OK, $bad BAD ===="
 
 echo

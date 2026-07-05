@@ -5,7 +5,7 @@ on macOS, Ubuntu/Debian, Arch, RHEL/Fedora, openSUSE, and Alpine.
 
 ## What you get
 
-- **zsh** with emacs line editing (no vi-mode), Atuin history, fzf, zoxide,
+- **zsh** with emacs line editing (no vi-mode), fzf, zoxide,
   autosuggestions, fast-syntax-highlighting, history-substring-search.
 - **Starship** prompt in Catppuccin Mocha.
 - **Neovim** with Lazy.nvim — LSP, Treesitter, Catppuccin, Telescope,
@@ -25,7 +25,6 @@ Then:
 1. Relogin (so the new default shell kicks in)
 2. Open tmux → `Prefix + I` (C-a, then I) to install tmux plugins
 3. Open nvim once — Lazy.nvim auto-installs plugins on first launch
-4. (Optional) `atuin register` then `atuin login` to sync history
 
 ## Install (from a local clone)
 
@@ -123,10 +122,6 @@ zplugin-list
 **`zsh: command not found: eza` after install**
 Your shell PATH doesn't include `~/.local/bin`. Open a fresh login shell or
 `source ~/.zshrc`.
-
-**Atuin asks for a key on first Ctrl+R**
-`atuin register` (creates a new account) or `atuin login` (existing account).
-Optional — Ctrl+R still works locally without sync.
 
 **Tmux: `catppuccin/tmux` plugin not loading**
 Inside tmux: `Prefix + I` (capital i) to install. Then `Prefix + r` to

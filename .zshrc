@@ -11,12 +11,9 @@
 # =========================================================
 # Resolve the absolute path of the dotfiles repo from this file's location,
 # so things work whether the repo is at ~/Developer/Projects/zsh, ~/.dotfiles/zsh,
-# or anywhere else.
+# or anywhere else. Used by `zshconfig`/`reload` and to find the plugin
+# loader; safe to fail silently if the repo isn't there.
 ZSH_DOTFILES_DIR="${ZSH_DOTFILES_DIR:-$(cd "$(dirname "${(%):-%x}")" 2>/dev/null && pwd)}"
-if [[ -z "$ZSH_DOTFILES_DIR" || ! -f "$ZSH_DOTFILES_DIR/zsh.conf" ]]; then
-  echo "zsh: dotfiles repo not found (looked at '$ZSH_DOTFILES_DIR')." >&2
-  echo "zsh: set \$ZSH_DOTFILES_DIR in ~/.zshenv, or reinstall via ./install.sh" >&2
-fi
 export ZSH_DOTFILES_DIR
 
 # =========================================================
@@ -88,12 +85,6 @@ unset _mod _compdump_file
 # =========================================================
 # Tool integrations (post-prompt)
 # =========================================================
-# Atuin replaces Ctrl+R with a better history search. It must be the LAST
-# thing sourced so it can wrap any earlier history widgets.
-if command -v atuin >/dev/null 2>&1; then
-  eval "$(atuin init zsh)"
-fi
-
 # direnv per-project env vars (only loaded if installed)
 if command -v direnv >/dev/null 2>&1; then
   eval "$(direnv hook zsh)"
