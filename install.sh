@@ -182,7 +182,22 @@ install_packages() {
 install_via_curl() {
   local url="$1" name="$2"; shift 2
   log "installing $name via curl..."
-  curl -fsSL "$url" | bash -s -- "$@"
+  local script
+  script="$(mktemp)"
+  if ! curl -fsSL "$url" -o "$script"; then
+    warn "failed to download $url"
+    rm -f "$script"
+    return 1
+  fi
+  # Run with sh — most installer scripts are POSIX sh and some (e.g. starship)
+  # explicitly refuse to run under bash.
+  if sh "$script" "$@"; then
+    rm -f "$script"
+  else
+    warn "$name installer exited non-zero — continuing anyway"
+    rm -f "$script"
+    return 0
+  fi
 }
 
 install_via_github_release() {
