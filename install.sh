@@ -190,10 +190,16 @@ install_via_curl() {
     return 1
   fi
   # Run with sh — most installer scripts are POSIX sh and some (e.g. starship)
-  # explicitly refuse to run under bash.
-  if sh "$script" "$@"; then
+  # explicitly refuse to run under bash. Force user-writable install dirs so
+  # the installer never needs sudo and never blocks on an interactive prompt.
+  # XDG_BIN_HOME is honoured by starship/zoxide/eza and prevents the
+  # /usr/local/bin sudo trap that hangs fresh installs.
+  if XDG_BIN_HOME="$HOME/.local/bin" \
+     BIN_DIR="$HOME/.local/bin" \
+     sh "$script" "$@"; then
     rm -f "$script"
   else
+    # Tolerate non-zero — one broken installer must not kill the rest.
     warn "$name installer exited non-zero — continuing anyway"
     rm -f "$script"
     return 0
@@ -365,8 +371,18 @@ change_shell() {
     log "default shell already zsh"
     return 0
   fi
-  log "changing default shell to $zsh_path (will prompt for password)"
-  chsh -s "$zsh_path" || warn "chsh failed — run it manually"
+  log "changing default shell to $zsh_path (will prompt for password if needed)"
+  if chsh -s "$zsh_path"; then
+    log "chsh OK — you MUST log out of this session and log back in"
+    log "  SSH:    exit the SSH connection and ssh back in"
+    log "  Desktop: sign out and sign back in"
+    log "  Just opening a new terminal is NOT enough — it inherits the old shell."
+    if [[ "${SHELL##*/}" != "zsh" ]]; then
+      warn "current session still running $SHELL — run: exec $zsh_path"
+    fi
+  else
+    warn "chsh failed — run manually: sudo chsh -s '$zsh_path' \$USER"
+  fi
 }
 
 # =========================================================
@@ -401,11 +417,15 @@ main() {
 
   echo
   log "✔ install complete"
-  log "next:"
-  log "  - relogin (so the new default shell takes effect)"
-  log "  - open tmux and press Prefix + I to install tmux plugins"
-  log "  - open nvim once (Lazy.nvim will auto-install plugins on first launch)"
-  log "  - starship: should work immediately"
+  log "next steps:"
+  log "  1. Log out of this session and log back in (SSH: exit+ssh; Desktop: sign out/in)"
+  if [[ "${SHELL##*/}" != "zsh" ]]; then
+    log "  OR for this session only: exec $SHELL"
+  fi
+  log "  2. Verify with: echo \$SHELL  (should end in /zsh)"
+  log "  3. Open tmux and press Prefix + I to install tmux plugins"
+  log "  4. Open nvim once (Lazy.nvim will auto-install plugins on first launch)"
+  log "  5. starship: should work immediately"
   echo
   log "any issues? read README.md or open an issue on $REPO_URL"
 }

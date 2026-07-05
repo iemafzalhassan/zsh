@@ -22,9 +22,14 @@ curl -fsSL https://raw.githubusercontent.com/iemafzalhassan/zsh/main/bootstrap.s
 
 Then:
 
-1. Relogin (so the new default shell kicks in)
-2. Open tmux → `Prefix + I` (C-a, then I) to install tmux plugins
-3. Open nvim once — Lazy.nvim auto-installs plugins on first launch
+1. **Log out of your session and log back in** (so the new default shell
+   kicks in). SSH: `exit` then `ssh back in`. Desktop: sign out → sign in.
+   Opening a new terminal is NOT enough — it inherits the old shell.
+2. Confirm you're in zsh: `echo $SHELL` should end in `/zsh`. If it
+   doesn't, run `exec $(which zsh)` to switch the current session
+   immediately.
+3. Open tmux → `Prefix + I` (C-a, then I) to install tmux plugins
+4. Open nvim once — Lazy.nvim auto-installs plugins on first launch
 
 ## Install (from a local clone)
 
