@@ -14,7 +14,7 @@ on macOS, Ubuntu/Debian, Arch, RHEL/Fedora, openSUSE, and Alpine.
 - **Git** with delta, sensible defaults, per-machine identity.
 - **Modern CLI**: eza, bat, fd, fzf, zoxide, ripgrep, lazygit, lazydocker.
 
-## Install (fresh machine)
+## Install
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/iemafzalhassan/zsh/main/bootstrap.sh | bash
