@@ -118,7 +118,16 @@ To list what's installed:
 zplugin-list
 ```
 
-## Troubleshooting
+## Development
+
+After editing any of the zsh modules, validate the install path in a sandbox:
+
+```sh
+./test-install.sh
+```
+
+This builds a fake `$HOME`, runs the symlink dance, and boots zsh against
+the result. It does NOT touch your real `$HOME`.
 
 **`zsh: command not found: eza` after install**
 Your shell PATH doesn't include `~/.local/bin`. Open a fresh login shell or
