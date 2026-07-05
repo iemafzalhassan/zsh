@@ -2,8 +2,8 @@
 # This file is symlinked into $HOME by install.sh.
 
 [user]
-	name = CHANGE ME
-	email = [email protected]
+	name = iemafzalhassan
+	email = [iemafzalhassan@gmail.com]
 
 [init]
 	defaultBranch = main

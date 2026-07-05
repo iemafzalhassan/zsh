@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # install.sh — unified zsh+nvim+tmux+git dotfiles installer.
 # Run from the dotfiles repo root: ./install.sh
-# Or fetch and run via: curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/zsh/main/bootstrap.sh | bash
+# Or fetch and run via: curl -fsSL https://raw.githubusercontent.com/iemafzalhassan/zsh/main/bootstrap.sh | bash
 
 set -euo pipefail
 
@@ -14,7 +14,7 @@ BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 LOG_PREFIX="[zsh-dotfiles]"
 
 # Tweakable defaults
-: "${REPO_URL:=https://github.com/YOUR_GITHUB_USERNAME/zsh.git}"
+: "${REPO_URL:=https://github.com/iemafzalhassan/zsh.git}"
 : "${TARGET_DIR:=$HOME/Developer/Projects/zsh}"
 : "${CHANGE_SHELL:=true}"
 : "${INSTALL_ATUIN:=true}"
@@ -229,20 +229,10 @@ fix_linux_alt_names() {
 link_dotfiles() {
   log "linking dotfiles into $HOME..."
 
-  # zsh modules — explicit (src-repo-path) -> (home-path) pairs.
-  # `zshrc` and `zshenv` live with leading dot in the repo; the rest don't.
-  local zsh_links=(
-    "$DOTFILES_DIR/.zshrc|$HOME/.zshrc"
-    "$DOTFILES_DIR/.zshenv|$HOME/.zshenv"
-    "$DOTFILES_DIR/aliases.zsh|$HOME/.aliases.zsh"
-    "$DOTFILES_DIR/bindings.zsh|$HOME/.bindings.zsh"
-    "$DOTFILES_DIR/fzf.zsh|$HOME/.fzf.zsh"
-    "$DOTFILES_DIR/plugins.zsh|$HOME/.plugins.zsh"
-    "$DOTFILES_DIR/prompt.zsh|$HOME/.prompt.zsh"
-  )
-  for entry in "${zsh_links[@]}"; do
-    local src="${entry%%|*}" dst="${entry##*|}"
-    symlink "$src" "$dst"
+  # zsh modules — symlinked as ~/.zshrc, ~/.aliases.zsh, etc.
+  local zsh_files=(zshrc zshenv aliases.zsh bindings.zsh fzf.zsh plugins.zsh prompt.zsh)
+  for f in "${zsh_files[@]}"; do
+    symlink "$DOTFILES_DIR/.$f" "$HOME/.$f"
   done
 
   # starship config

@@ -2,17 +2,17 @@
 # bootstrap.sh — one-shot installer fetched via curl.
 #
 # Usage (from any fresh macOS/Linux box):
-#   curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/zsh/main/bootstrap.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/iemafzalhassan/zsh/main/bootstrap.sh | bash
 #
 # What it does:
 #   1. Clones the dotfiles repo to ~/Developer/Projects/zsh
 #   2. Runs install.sh from the cloned repo
 #
 # Override the repo URL or target dir:
-#   REPO_URL=https://github.com/you/zsh.git TARGET_DIR=~/code/zsh curl -fsSL ... | bash
+#   REPO_URL=https://github.com/iemafzalhassan/zsh.git TARGET_DIR=~/code/zsh curl -fsSL ... | bash
 set -euo pipefail
 
-: "${REPO_URL:=https://github.com/YOUR_GITHUB_USERNAME/zsh.git}"
+: "${REPO_URL:=https://github.com/iemafzalhassan/zsh.git}"
 : "${TARGET_DIR:=$HOME/Developer/Projects/zsh}"
 : "${BRANCH:=main}"
 

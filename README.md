@@ -17,7 +17,7 @@ on macOS, Ubuntu/Debian, Arch, RHEL/Fedora, openSUSE, and Alpine.
 ## Install (fresh machine)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/zsh/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/iemafzalhassan/zsh/main/bootstrap.sh | bash
 ```
 
 Then:
@@ -30,7 +30,7 @@ Then:
 ## Install (from a local clone)
 
 ```sh
-git clone https://github.com/YOUR_GITHUB_USERNAME/zsh ~/Developer/Projects/zsh
+git clone https://github.com/iemafzalhassan/zsh ~/Developer/Projects/zsh
 cd ~/Developer/Projects/zsh
 ./install.sh
 ```
@@ -118,16 +118,7 @@ To list what's installed:
 zplugin-list
 ```
 
-## Development
-
-After editing any of the zsh modules, validate the install path in a sandbox:
-
-```sh
-./test-install.sh
-```
-
-This builds a fake `$HOME`, runs the symlink dance, and boots zsh against
-the result. It does NOT touch your real `$HOME`.
+## Troubleshooting
 
 **`zsh: command not found: eza` after install**
 Your shell PATH doesn't include `~/.local/bin`. Open a fresh login shell or
