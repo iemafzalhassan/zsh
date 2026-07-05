@@ -1,0 +1,66 @@
+# ~/.gitconfig — base config. Per-machine identity is set during install.
+# This file is symlinked into $HOME by install.sh.
+
+[user]
+	name = CHANGE ME
+	email = [email protected]
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = nvim
+	autocrlf = input
+	pager = delta
+	untrackedCache = true
+	preloadindex = true
+
+[color]
+	ui = auto
+
+[delta]
+	navigate = true
+	light = false
+	line-numbers = true
+	side-by-side = true
+	features = catppuccin-mocha
+
+[merge]
+	tool = nvim
+	conflictstyle = zdiff3
+
+[diff]
+	tool = nvim
+	algorithm = histogram
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	lol = log --oneline --graph --decorate
+	lola = log --oneline --graph --decorate --all
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = version:refname
+
+[fetch]
+	prune = true
+	pruneTags = true
+
+[help]
+	autocorrect = 10
+
+[pull]
+	rebase = false
+
+# GPG signing — install.sh prompts; you can flip this later.
+# [commit]
+#	gpgsign = true
+# [gpg]
+#	program = /opt/homebrew/bin/gpg

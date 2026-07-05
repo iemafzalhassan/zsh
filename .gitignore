@@ -1,0 +1,24 @@
+# Editor / OS junk
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.cursor/
+*.code-workspace
+
+# Local shell history / state
+.history
+.zsh_history
+.zsh_sessions/
+
+# nvim runtime cache (in $XDG_CACHE_HOME, not the repo — defensive)
+.nviminfo
+.nvim/
+
+# Backups
+.dotfiles-backup/
+
+# Atuin
+.atuin/
