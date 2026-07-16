@@ -17,7 +17,7 @@ ZSH_DOTFILES_DIR="${ZSH_DOTFILES_DIR:-$(cd "$(dirname "${(%):-%x}")" 2>/dev/null
 export ZSH_DOTFILES_DIR
 
 # =========================================================
-# History (Atuin replaces the default history widget)
+# History
 # =========================================================
 HISTSIZE=100000
 SAVEHIST=100000

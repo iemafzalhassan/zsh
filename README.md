@@ -1,18 +1,21 @@
 # zsh — unified dotfiles
 
+[![GitHub stars](https://img.shields.io/github/stars/iemafzalhassan/zsh?style=flat-square)](https://github.com/iemafzalhassan/zsh/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/iemafzalhassan/zsh?style=flat-square)](https://github.com/iemafzalhassan/zsh/network/members)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
 One command on a fresh machine, relogin, done. Same zsh + nvim + tmux + git
 on macOS, Ubuntu/Debian, Arch, RHEL/Fedora, openSUSE, and Alpine.
 
-## What you get
+## ✨ What you get
 
-- **zsh** with emacs line editing (no vi-mode), fzf, zoxide,
-  autosuggestions, fast-syntax-highlighting, history-substring-search.
-- **Starship** prompt in Catppuccin Mocha.
-- **Neovim** with Lazy.nvim — LSP, Treesitter, Catppuccin, Telescope,
-  Neo-tree, gitsigns, autopairs, conform, none-ls, Comment.
-- **Tmux** with TPM and Catppuccin theme (C-a prefix, vim nav).
-- **Git** with delta, sensible defaults, per-machine identity.
-- **Modern CLI**: eza, bat, fd, fzf, zoxide, ripgrep, lazygit, lazydocker.
+- **Shell:** `zsh` with emacs line editing, fzf, zoxide, autosuggestions, fast-syntax-highlighting, history-substring-search.
+- **Prompt:** Starship prompt in Catppuccin Mocha.
+- **Editor:** Neovim with Lazy.nvim (LSP, Treesitter, Telescope, Neo-tree, gitsigns, autopairs, conform).
+- **Multiplexer:** Tmux with TPM and Catppuccin theme (C-a prefix, vim nav).
+- **Git:** configured with delta, sensible defaults, and per-machine identity.
+- **Modern CLI:** `eza`, `bat`, `fd`, `ripgrep`, `lazygit`, `lazydocker`.
+- **DevOps Ready:** Auto-installs `kubectl`, `helm`, `terraform`, and `multipass`.
 
 ## Install (Fresh Machine)
 
@@ -84,10 +87,10 @@ Needs Homebrew (`https://brew.sh`). All packages via `brew install`.
 ### Ubuntu / Debian / Pop!_OS
 `bat` and `fd` install as `batcat` and `fdfind`. `install.sh` creates
 `~/.local/bin/bat` and `~/.local/bin/fd` symlinks for you. eza, zoxide,
-starship, atuin install via their official curl scripts.
+starship installs via their official curl scripts.
 
 ### Arch / Manjaro / CachyOS / EndeavourOS
-Everything's in the official repos, including eza, zoxide, starship, atuin,
+Everything's in the official repos, including eza, zoxide, starship,
 lazygit, lazydocker.
 
 ### RHEL / Fedora / Rocky / AlmaLinux / Nobara
@@ -106,6 +109,15 @@ Supported via `zypper` and `apk` respectively. Curl scripts fill the gaps.
   then `:Lazy sync` inside nvim
 - Add a new tmux plugin: append `set -g @plugin '...'` to `tmux/.tmux.conf`,
   then `Prefix + I`
+
+## 🍴 Fork & Use as a Base
+
+Want to use this setup as your own base? It's highly encouraged! 
+1. **Fork** this repository.
+2. Edit `bootstrap.sh` and change the `REPO_URL` and `REPO_RAW_URL` to point to your new GitHub username.
+3. Edit `install.sh` and update `REPO_URL` to your fork.
+4. Tweak `aliases.zsh`, `install.sh` tools, and `starship.toml` to your own liking.
+5. You now have your own one-command bootstrap dotfiles!
 
 ## Plugin management (no third-party tool)
 

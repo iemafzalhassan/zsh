@@ -17,7 +17,6 @@ LOG_PREFIX="[zsh-dotfiles]"
 : "${REPO_URL:=https://github.com/iemafzalhassan/zsh.git}"
 : "${TARGET_DIR:=$HOME/Developer/Projects/zsh}"
 : "${CHANGE_SHELL:=true}"
-: "${INSTALL_ATUIN:=false}"
 : "${INSTALL_STARSHIP:=true}"
 : "${INSTALL_TPM:=true}"
 : "${PROMPT_FOR_GIT_IDENTITY:=true}"
@@ -129,47 +128,41 @@ install_packages() {
     macos)
       # All tools via brew
       brew install \
-        zsh neovim eza bat fd fzf zoxide starship ripgrep git \
+        zsh neovim eza bat fd fzf zoxide starship ripgrep git unzip \
         lazygit lazydocker jq yq gum tree-sitter-cli stylua
-      if $INSTALL_ATUIN; then brew install atuin; fi
       ;;
     debian)
-      pkg_install zsh neovim ripgrep fd-find fzf bat git curl wget
-      # eza, zoxide, starship, atuin, lazygit, lazydocker — not in apt
+      pkg_install zsh neovim ripgrep fd-find fzf bat git curl wget unzip
+      # eza, zoxide, starship, lazygit, lazydocker — not in apt
       install_via_curl "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh" "zoxide"
       install_via_curl "https://starship.rs/install.sh" "starship" -y
-      if $INSTALL_ATUIN; then install_via_curl "https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh" "atuin"; fi
       install_via_github_release jesseduffield/lazygit lazygit
       install_via_github_release jesseduffield/lazydocker lazydocker
       # eza: GitHub release
       install_via_github_release eza-community/eza eza
       ;;
     arch)
-      pkg_install zsh neovim eza bat fd fzf zoxide starship ripgrep git \
+      pkg_install zsh neovim eza bat fd fzf zoxide starship ripgrep git unzip \
         lazygit lazydocker jq gum tree-sitter-cli stylua
-      if $INSTALL_ATUIN; then pkg_install atuin; fi
       ;;
     rhel)
-      pkg_install zsh neovim ripgrep fd-find fzf bat git curl wget
+      pkg_install zsh neovim ripgrep fd-find fzf bat git curl wget unzip
       # dnf-EPEL may be needed for some; if dnf fails, try fallback names
       install_via_curl "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh" "zoxide"
       install_via_curl "https://starship.rs/install.sh" "starship" -y
-      if $INSTALL_ATUIN; then install_via_curl "https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh" "atuin"; fi
       install_via_github_release jesseduffield/lazygit lazygit
       install_via_github_release jesseduffield/lazydocker lazydocker
       install_via_github_release eza-community/eza eza
       ;;
     suse)
-      pkg_install zsh neovim ripgrep fd fzf bat git curl wget
+      pkg_install zsh neovim ripgrep fd fzf bat git curl wget unzip
       install_via_curl "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh" "zoxide"
       install_via_curl "https://starship.rs/install.sh" "starship" -y
-      if $INSTALL_ATUIN; then install_via_curl "https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh" "atuin"; fi
       ;;
     alpine)
-      pkg_install zsh neovim ripgrep fd fzf bat git curl wget sudo bash
+      pkg_install zsh neovim ripgrep fd fzf bat git curl wget sudo bash unzip
       install_via_curl "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh" "zoxide"
       install_via_curl "https://starship.rs/install.sh" "starship" -y
-      if $INSTALL_ATUIN; then install_via_curl "https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh" "atuin"; fi
       install_via_github_release eza-community/eza eza
       ;;
     *)
@@ -351,6 +344,60 @@ configure_git_identity() {
 }
 
 # =========================================================
+# Install Devops tools
+# =========================================================
+install_devops_tools() {
+  log "installing devops tools (helm, kubectl, terraform, multipass)..."
+  case "$OS" in
+    macos)
+      brew install helm kubectl multipass terraform
+      ;;
+    debian|arch|rhel|suse|alpine)
+      # kubectl
+      if ! command -v kubectl >/dev/null 2>&1; then
+        log "installing kubectl..."
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        mkdir -p "$HOME/.local/bin"
+        mv kubectl "$HOME/.local/bin/"
+      fi
+      
+      # helm
+      if ! command -v helm >/dev/null 2>&1; then
+        log "installing helm..."
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        HELM_INSTALL_DIR="$HOME/.local/bin" ./get_helm.sh --no-sudo
+        rm get_helm.sh
+      fi
+
+      # terraform
+      if ! command -v terraform >/dev/null 2>&1; then
+        log "installing terraform..."
+        local tf_version="1.5.7"
+        curl -fsSL -o terraform.zip "https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip"
+        if command -v unzip >/dev/null 2>&1; then
+          unzip -o terraform.zip -d "$HOME/.local/bin/"
+          rm terraform.zip
+        else
+          warn "unzip not found, skipping terraform"
+        fi
+      fi
+
+      # multipass
+      if ! command -v multipass >/dev/null 2>&1; then
+        if command -v snap >/dev/null 2>&1; then
+          log "installing multipass via snap..."
+          sudo snap install multipass || warn "failed to install multipass"
+        else
+          warn "snap not found, skipping multipass (requires snap on linux)"
+        fi
+      fi
+      ;;
+  esac
+}
+
+# =========================================================
 # Change default shell to zsh
 # =========================================================
 change_shell() {
@@ -413,6 +460,7 @@ main() {
   link_dotfiles
   link_vim_shims
   configure_git_identity
+  install_devops_tools
   change_shell
 
   echo

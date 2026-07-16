@@ -19,7 +19,7 @@ cp -R /Users/iemafzal-mac/Developer/Projects/zsh/. "$TMPDOT/"
 chmod +x "$TMPDOT/install.sh"
 
 export CHANGE_SHELL=false INSTALL_TPM=false
-export PROMPT_FOR_GIT_IDENTITY=false INSTALL_ATUIN=false
+export PROMPT_FOR_GIT_IDENTITY=false
 export DOTFILES_DIR="$TMPDOT"
 
 WRAP="$TMPDOT/install-test.sh"
@@ -37,7 +37,7 @@ export XDG_CACHE_HOME="$FAKE_HOME/.cache"
 export XDG_DATA_HOME="$FAKE_HOME/.local/share"
 export XDG_STATE_HOME="$FAKE_HOME/.local/state"
 export CHANGE_SHELL=false INSTALL_TPM=false
-export PROMPT_FOR_GIT_IDENTITY=false INSTALL_ATUIN=false
+export PROMPT_FOR_GIT_IDENTITY=false
 install_packages() { :; }
 fix_linux_alt_names() { :; }
 install_tpm() { :; }
